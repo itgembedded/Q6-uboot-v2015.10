@@ -1,0 +1,8 @@
+MX6SABRESD BOARD
+M:	Phil Flournoy <phil@itgembedded.com>
+S:	Maintained
+F:	board/jci/Q6/
+F:	include/configs/Q6.h
+F:	configs/Q6dl_defconfig
+F:	configs/Q6_defconfig
+F:	configs/Q6_spl_defconfig

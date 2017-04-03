@@ -1,0 +1,12 @@
+if TARGET_Q6
+
+config SYS_BOARD
+	default "Q6"
+
+config SYS_VENDOR
+	default "jci"
+
+config SYS_CONFIG_NAME
+	default "Q6"
+
+endif
