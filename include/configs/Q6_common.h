@@ -53,8 +53,8 @@
 #define CONFIG_SPI_FLASH_SST
 #define CONFIG_SPI_FLASH_SST26
 #define CONFIG_MXC_SPI
-#define CONFIG_SF_DEFAULT_BUS		2
-#define CONFIG_SF_DEFAULT_CS		1
+#define CONFIG_SF_DEFAULT_BUS		0
+#define CONFIG_SF_DEFAULT_CS		0
 #define CONFIG_SF_DEFAULT_SPEED		20000000
 #define CONFIG_SF_DEFAULT_MODE		SPI_MODE_0
 #endif
@@ -94,22 +94,22 @@
 
 
 /* Env settings */
-#define CONFIG_ENV_DEFAULT_UBT_FILE         "u-boot-" CONFIG_OPENREX_DEFAULT_ARCH_PREFIX "openrex" CONFIG_OPENREX_DEFAULT_ARCH_POSTFIX ".imx"
-#define CONFIG_ENV_DEFAULT_IMG_FILE         "zImage-" CONFIG_OPENREX_DEFAULT_ARCH_PREFIX "openrex" CONFIG_OPENREX_DEFAULT_ARCH_POSTFIX
-#define CONFIG_ENV_DEFAULT_FDT_FILE                   CONFIG_OPENREX_DEFAULT_ARCH_PREFIX "openrex" CONFIG_OPENREX_DEFAULT_ARCH_POSTFIX ".dtb"
-#define CONFIG_ENV_DEFAULT_SCR_FILE         "boot-"   CONFIG_OPENREX_DEFAULT_ARCH_PREFIX "openrex" CONFIG_OPENREX_DEFAULT_ARCH_POSTFIX ".scr"
+#define CONFIG_ENV_DEFAULT_UBT_FILE	"u-boot.imx"
+#define CONFIG_ENV_DEFAULT_IMG_FILE	"zImage"
+#define CONFIG_ENV_DEFAULT_FDT_FILE	"imx6q-Q6.dtb"
+#define CONFIG_ENV_DEFAULT_SCR_FILE	"boot_Q6.scr"
+
 #define CONFIG_ENV_DEFAULT_ETH_ADDR         "00:0D:15:00:D1:75"
 #define CONFIG_ENV_DEFAULT_CLIENT_IP        "192.168.0.150"
 #define CONFIG_ENV_DEFAULT_SERVER_IP        "192.168.0.1"
 #define CONFIG_ENV_DEFAULT_NETMASK          "255.255.255.0"
-#define CONFIG_ENV_DEFAULT_NFSROOT          "/home/fedevel/nfs"
+#define CONFIG_ENV_DEFAULT_NFSROOT          "/nfs/imx6"
 #define CONFIG_ENV_DEFAULT_TFTP_DIR         "imx6"
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"tftp_dir=" CONFIG_ENV_DEFAULT_TFTP_DIR "\0" \
-	"tftp_dir=" CONFIG_ENV_DEFAULT_TFTP_DIR "\0" \
 	"script="   CONFIG_ENV_DEFAULT_SCR_FILE "\0" \
-	"image="    "zImage" "\0" \
+	"image="    CONFIG_ENV_DEFAULT_IMG_FILE "\0" \
 	"fdt_file=" CONFIG_ENV_DEFAULT_FDT_FILE "\0" \
 	"fdt_addr=0x18000000\0" \
 	"boot_fdt=try\0" \
@@ -300,9 +300,14 @@
 		"run set_ethernet; " \
 		"run update_set_filename; " \
 		"run netargs; " \
-		"tftp ${loadaddr} ${tftp_dir}/${upd_kernel}; " \
+		"if test ${ip_dyn} = yes; then " \
+			"setenv get_cmd dhcp; " \
+		"else " \
+			"setenv get_cmd tftp; " \
+		"fi; " \
+		"${get_cmd} ${loadaddr} ${tftp_dir}/${image}; " \
 		"if test ${boot_fdt} = yes || test ${boot_fdt} = try; then " \
-			"if tftp ${fdt_addr} ${tftp_dir}/${upd_fdt}; then " \
+			"if ${get_cmd} ${fdt_addr} ${tftp_dir}/${upd_fdt}; then " \
 				"bootz ${loadaddr} - ${fdt_addr}; " \
 			"else " \
 				"if test ${boot_fdt} = try; then " \
@@ -317,9 +322,7 @@
 	"findfdt="\
 		"if test $fdt_file = undefined; then " \
 			"if test $board_name = Q6 && test $board_rev = MX6Q; then " \
-				"setenv fdt_file imx6q-openrex.dtb; fi; " \
-			"if test $board_name = Q6 && test $board_rev = MX6DL; then " \
-				"setenv fdt_file imx6dl-openrex.dtb; fi; " \
+				"setenv fdt_file " CONFIG_ENV_DEFAULT_FDT_FILE "; fi; " \
 			"if test $fdt_file = undefined; then " \
 				"echo WARNING: Could not determine dtb to use; fi; " \
 		"fi;\0" \
@@ -353,7 +356,7 @@
 /* Environment organization */
 #define CONFIG_ENV_SIZE			(8 * 1024)
 
-#define CONFIG_ENV_IS_IN_SPI_FLASH
+#define CONFIG_ENV_IS_IN_MMC
 
 #if defined(CONFIG_ENV_IS_IN_MMC)
 #define CONFIG_ENV_OFFSET		(6 * 64 * 1024)
