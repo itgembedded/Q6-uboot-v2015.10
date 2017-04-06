@@ -22,10 +22,6 @@
 #define CONFIG_MMCROOT		"/dev/mmcblk1p2"
 #define CONFIG_SATAROOT		"/dev/sda2"
 
-/* PARAMETERS FROM _defconfig (they are called there without CONFIG_)*/
-#define CONFIG_OPENREX_DEFAULT_ARCH_PREFIX  CONFIG_BOARD_TYPE_PREFIX
-#define CONFIG_OPENREX_DEFAULT_ARCH_POSTFIX  CONFIG_BOARD_TYPE_POSTFIX
-
 #if defined(CONFIG_DDR_SIZE) 
 #define PHYS_SDRAM_SIZE         CONFIG_DDR_SIZE
 #else

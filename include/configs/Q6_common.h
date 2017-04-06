@@ -359,7 +359,7 @@
 #define CONFIG_ENV_IS_IN_MMC
 
 #if defined(CONFIG_ENV_IS_IN_MMC)
-#define CONFIG_ENV_OFFSET		(6 * 64 * 1024)
+#define CONFIG_ENV_OFFSET		(8 * 64 * 1024)
 #define CONFIG_SYS_MMC_ENV_DEV		0
 #elif defined(CONFIG_ENV_IS_IN_SPI_FLASH)
 #define CONFIG_ENV_OFFSET		(768 * 1024)
